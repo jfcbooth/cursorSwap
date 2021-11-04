@@ -1,0 +1,4 @@
+Set-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "Arrow" -Value $(Get-ItemProperty "Registry::HKCU\Control Panel\Cursors")."OriginalCursor";Remove-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "OriginalCursor";if(Test-Path variable:CursorRefresh){$CursorRefresh::SystemParametersInfo(0x0057,0,$null,0)}else{$CSharpSig = @'
+[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
+public static extern bool SystemParametersInfo(uint uiAction,uint uiParam,uint pvParam,uint fWinIni);
+'@;$CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo -PassThru;$CursorRefresh::SystemParametersInfo(0x0057,0,$null,0)}

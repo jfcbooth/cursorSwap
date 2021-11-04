@@ -1,0 +1,72 @@
+# Download cursor
+curl https://github.com/jfcbooth/cursorSwap/blob/main/cursor.cur?raw=true -o $env:USERPROFILE/cursor.cur
+
+# Save old cursor profile to value of "OriginalCursorScheme"
+New-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "OriginalCursorScheme" -Value $(Get-ItemProperty "Registry::HKCU\Control Panel\Cursors")."Arrow"
+
+# Put name of new cursor profile
+ Set-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "Arrow" -Value "$env:USERPROFILE/cursor.cur"
+
+# Update cursor
+$CSharpSig = @’
+[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
+public static extern bool SystemParametersInfo(uint uiAction,uint uiParam,uint pvParam,uint fWinIni);
+‘@;$CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru;$CursorRefresh::SystemParametersInfo(0x0057,0,$null,0)
+
+
+
+# create new scheme in registry
+New-ItemProperty -Path "HKCU:\Control Panel\Cursors\Schemes" -Name "MyCustomCursor" -Value "$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur"
+
+# Put name of new cursor profile
+ Set-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "(Default)" -Value "MyCustomCursor"
+
+
+
+
+# Update cursor
+$CSharpSig = @’
+[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
+public static extern bool SystemParametersInfo(uint uiAction,uint uiParam,uint pvParam,uint fWinIni);
+‘@;$CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru;$CursorRefresh::SystemParametersInfo(0x0057,0,$null,0)
+
+
+
+
+
+$CSharpSig = @’[DllImport(“user32.dll”, EntryPoint = “SystemParametersInfo”)]
+public static extern bool SystemParametersInfo(uint uiAction,uint uiParam,uint pvParam,uint fWinIni);‘@
+
+$CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru
+
+$CursorRefresh::SystemParametersInfo(0x0057,0,$null,0)
+
+
+
+# Get the name of the current cursor
+Get-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "(Default)"
+
+# create new key to store original cursor scheme in
+New-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "OriginalCursorScheme"
+
+# create folder for scripts to sit in
+New-Item -Path $env:USERPROFILE -Name "swap" -ItemType "directory"
+
+# create new scheme in registry
+New-ItemProperty -Path "HKCU:\Control Panel\Cursors\Schemes" -Name "Josh" -Value "$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur,$env:USERPROFILE\cursor.cur"
+
+# Update cursor
+$CSharpSig = @’
+[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
+public static extern bool SystemParametersInfo(uint uiAction,uint uiParam,uint pvParam,uint fWinIni);
+‘@;$CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru;$CursorRefresh::SystemParametersInfo(0x0057,0,$null,0)
+
+New-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "OriginalCursorScheme" -Value $(Get-ItemProperty "Registry::1HKCU\Control Panel\Cursors")."Arrow"
+
+# Unset script
+Set-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "Arrow" -Value $(Get-ItemProperty "Registry::HKCU\Control Panel\Cursors")."OriginalCursor";Remove-ItemProperty -Path "HKCU:\Control Panel\Cursors" -Name "OriginalCursor";if(Test-Path variable:CursorRefresh){$CursorRefresh::SystemParametersInfo(0x0057,0,$null,0)}else{$CSharpSig = @’
+[DllImport("user32.dll", EntryPoint = "SystemParametersInfo")]
+public static extern bool SystemParametersInfo(uint uiAction,uint uiParam,uint pvParam,uint fWinIni);
+‘@;$CursorRefresh = Add-Type -MemberDefinition $CSharpSig -Name WinAPICall -Namespace SystemParamInfo –PassThru;$CursorRefresh::SystemParametersInfo(0x0057,0,$null,0)}
+
+
